@@ -1,0 +1,798 @@
+Java Streams:
+Related to java collection framework/Group of objects 
+introduced in java 1.8 version
+reduce the code length
+
+Filter method takes predicate -> predicate means Boolean valued function 
+map takes function means we have to return a value there not true false like filter 
+
+newNames.stream().forEach(System.out::println);
+
+min, max return optional so have to use .get at the end 
+
+
+
+
+Labmda functions:
+
+When we want to use behaviour without wrapping it in any object (as java is based on objects only) then we can use functional interfaces -> lambda expressions 
+
+
+we can't call function in argument of other function in java 
+
+
+
+Functional Interface: interface with only one abstract method 
+with the help of these functional interfaces labdas comes in java and that brings the functional programming in java 
+
+
+
+
+
+
+
+
+
+
+====================================================
+JAVA 8 REVISION NOTES (Functional Interface + Lambda + Streams)
+====================================================
+
+----------------------------------------------------
+1. FUNCTIONAL INTERFACE
+----------------------------------------------------
+
+Definition:
+A Functional Interface contains exactly ONE abstract method.
+
+Example:
+
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);
+}
+
+Valid Functional Interface:
+
+interface Test {
+    void run();
+
+    default void show() {}
+    static void print() {}
+}
+
+Note:
+Default and static methods do not affect functional interface status.
+
+Why Introduced?
+To support Lambda Expressions and Functional Programming.
+
+Before Java 8:
+
+Runnable r = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Running");
+    }
+};
+
+After Java 8:
+
+Runnable r = () -> System.out.println("Running");
+
+Real World Example:
+Discount Strategy in E-commerce
+
+@FunctionalInterface
+interface Discount {
+    double apply(double amount);
+}
+
+Discount festival = amt -> amt * 0.8;
+Discount employee = amt -> amt * 0.7;
+
+----------------------------------------------------
+2. LAMBDA EXPRESSIONS
+----------------------------------------------------
+
+Definition:
+A Lambda Expression is an anonymous function.
+
+Syntax:
+
+(parameters) -> expression
+
+Examples:
+
+() -> System.out.println("Hello")
+
+x -> x * x
+
+(a, b) -> a + b
+
+(a, b) -> {
+    int sum = a + b;
+    return sum;
+}
+
+Real World Example:
+Sorting Employees
+
+Before Java 8:
+
+Collections.sort(list, new Comparator<Employee>() {
+    @Override
+    public int compare(Employee e1, Employee e2) {
+        return e1.getSalary() - e2.getSalary();
+    }
+});
+
+After Java 8:
+
+list.sort((e1, e2) ->
+    e1.getSalary() - e2.getSalary());
+
+----------------------------------------------------
+3. BUILT-IN FUNCTIONAL INTERFACES
+----------------------------------------------------
+
+A) Predicate<T>
+
+Input -> Boolean
+
+Predicate<Integer> isEven =
+        n -> n % 2 == 0;
+
+isEven.test(10);
+
+Real Use:
+Age Validation
+
+Predicate<Integer> adult =
+        age -> age >= 18;
+
+----------------------------------------------------
+
+B) Consumer<T>
+
+Input -> No Return
+
+Consumer<String> print =
+        s -> System.out.println(s);
+
+print.accept("Hello");
+
+Real Use:
+Sending Email / Notification
+
+Consumer<User> sendMail =
+        user -> emailService.send(user);
+
+----------------------------------------------------
+
+C) Supplier<T>
+
+No Input -> Returns Output
+
+Supplier<String> otp =
+        () -> UUID.randomUUID().toString();
+
+otp.get();
+
+Real Use:
+OTP Generation
+
+----------------------------------------------------
+
+D) Function<T,R>
+
+Input -> Output
+
+Function<String,Integer> length =
+        s -> s.length();
+
+length.apply("Java");
+
+Output:
+4
+
+Real Use:
+DTO -> Entity Conversion
+
+Function<UserDTO, User> mapper =
+        dto -> new User(dto.getName());
+
+----------------------------------------------------
+4. METHOD REFERENCES
+----------------------------------------------------
+
+Instead of:
+
+list.forEach(s -> System.out.println(s));
+
+Use:
+
+list.forEach(System.out::println);
+
+Types:
+
+ClassName::staticMethod
+
+object::instanceMethod
+
+ClassName::new
+
+Example:
+
+Supplier<List<String>> list =
+        ArrayList::new;
+
+----------------------------------------------------
+5. STREAM API
+----------------------------------------------------
+
+Definition:
+A Stream processes data from Collections.
+
+Collection = Stores Data
+
+Stream = Processes Data
+
+Example:
+
+List<Integer> nums =
+        Arrays.asList(1,2,3,4,5);
+
+nums.stream();
+
+Why Stream API?
+
+Before Java 8:
+
+for(Integer n : nums){
+    if(n % 2 == 0){
+        System.out.println(n);
+    }
+}
+
+After Java 8:
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .forEach(System.out::println);
+
+----------------------------------------------------
+6. STREAM PIPELINE
+----------------------------------------------------
+
+Source
+   ->
+Intermediate Operations
+   ->
+Terminal Operation
+
+Example:
+
+list.stream()
+    .filter(x -> x > 10)
+    .map(x -> x * 2)
+    .forEach(System.out::println);
+
+----------------------------------------------------
+7. IMPORTANT STREAM OPERATIONS
+----------------------------------------------------
+
+A) filter()
+
+Used to filter data.
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .toList();
+
+Output:
+[2,4]
+
+----------------------------------------------------
+
+B) map()
+
+Transforms data.
+
+nums.stream()
+    .map(n -> n * n)
+    .forEach(System.out::println);
+
+Output:
+1 4 9 16 25
+
+----------------------------------------------------
+
+C) sorted()
+
+nums.stream()
+    .sorted()
+    .forEach(System.out::println);
+
+----------------------------------------------------
+
+D) distinct()
+
+List.of(1,1,2,2,3)
+    .stream()
+    .distinct()
+    .forEach(System.out::println);
+
+Output:
+1 2 3
+
+----------------------------------------------------
+
+E) limit()
+
+stream.limit(5);
+
+----------------------------------------------------
+
+F) skip()
+
+stream.skip(3);
+
+----------------------------------------------------
+
+G) count()
+
+long count =
+    nums.stream().count();
+
+----------------------------------------------------
+
+H) findFirst()
+
+Optional<Integer> first =
+    nums.stream().findFirst();
+
+----------------------------------------------------
+
+I) anyMatch()
+
+boolean result =
+    nums.stream()
+        .anyMatch(n -> n > 100);
+
+----------------------------------------------------
+
+J) reduce()
+
+Most Important
+
+int sum =
+    nums.stream()
+        .reduce(0, (a,b) -> a+b);
+
+----------------------------------------------------
+
+K) collect()
+
+List<Integer> list =
+    nums.stream()
+        .filter(n -> n % 2 == 0)
+        .collect(Collectors.toList());
+
+----------------------------------------------------
+8. FLATMAP (VERY IMPORTANT)
+----------------------------------------------------
+
+Difference:
+
+map()
+Transforms one element into one element.
+
+flatMap()
+Transforms one element into multiple elements
+and flattens the result.
+
+Example:
+
+List<List<String>> list =
+        List.of(
+            List.of("A","B"),
+            List.of("C","D")
+        );
+
+list.stream()
+    .flatMap(Collection::stream)
+    .forEach(System.out::println);
+
+Output:
+
+A
+B
+C
+D
+
+Real World Example:
+Orders -> Products
+
+Order1 -> ProductA ProductB
+Order2 -> ProductC ProductD
+
+flatMap converts:
+
+[[A,B],[C,D]]
+
+into
+
+[A,B,C,D]
+
+----------------------------------------------------
+9. PARALLEL STREAM
+----------------------------------------------------
+
+list.parallelStream()
+    .forEach(System.out::println);
+
+Difference:
+
+Stream
+- Single Thread
+
+Parallel Stream
+- Multiple Threads
+- Uses ForkJoinPool
+
+Use For:
+Large CPU-intensive operations.
+
+Avoid For:
+Small datasets.
+
+----------------------------------------------------
+10. INTERMEDIATE VS TERMINAL OPERATIONS
+----------------------------------------------------
+
+Intermediate Operations:
+filter()
+map()
+sorted()
+distinct()
+limit()
+skip()
+
+Terminal Operations:
+collect()
+forEach()
+count()
+reduce()
+findFirst()
+
+----------------------------------------------------
+11. LAZY EVALUATION
+----------------------------------------------------
+
+Stream operations are lazy.
+
+Nothing executes until terminal operation appears.
+
+Example:
+
+nums.stream()
+    .filter(n -> n % 2 == 0)
+    .map(n -> n * 2);
+
+No execution yet.
+
+Execution starts only when:
+
+.collect(...)
+.forEach(...)
+.count(...)
+
+----------------------------------------------------
+12. OPTIONAL (IMPORTANT)
+----------------------------------------------------
+
+Avoid NullPointerException.
+
+Optional<Integer> value =
+        nums.stream().findFirst();
+
+value.ifPresent(System.out::println);
+
+----------------------------------------------------
+13. REAL PROJECT EXAMPLES
+----------------------------------------------------
+
+Get Active Users
+
+users.stream()
+     .filter(User::isActive)
+     .toList();
+
+----------------------------------------------------
+
+Get Employee Names
+
+employees.stream()
+         .map(Employee::getName)
+         .toList();
+
+----------------------------------------------------
+
+Highest Salary Employee
+
+Employee emp =
+    employees.stream()
+             .max(
+                 Comparator.comparing(
+                     Employee::getSalary))
+             .get();
+
+----------------------------------------------------
+
+Total Salary
+
+double total =
+    employees.stream()
+             .map(Employee::getSalary)
+             .reduce(0.0, Double::sum);
+
+----------------------------------------------------
+14. INTERVIEW QUESTIONS
+----------------------------------------------------
+
+FUNCTIONAL INTERFACE
+
+1. What is a Functional Interface?
+2. Why was Functional Interface introduced?
+3. Can it have default methods?
+4. Can it have static methods?
+5. Why use @FunctionalInterface?
+6. Name built-in Functional Interfaces.
+
+----------------------------------------------------
+
+LAMBDA
+
+1. What is Lambda Expression?
+2. Difference between Lambda and Anonymous Class?
+3. What is effectively final?
+4. Can Lambda access local variables?
+5. Why Lambda is more concise?
+
+----------------------------------------------------
+
+STREAM API
+
+1. What is Stream API?
+2. Difference between Collection and Stream?
+3. Difference between filter() and map()?
+4. Difference between map() and flatMap()?
+5. What is reduce()?
+6. What is lazy evaluation?
+7. What are intermediate operations?
+8. What are terminal operations?
+9. Difference between Stream and Parallel Stream?
+10. Why Optional is used?
+11. Difference between forEach() and map()?
+12. What is method reference?
+
+----------------------------------------------------
+15. 10-MINUTE OFFICE REVISION CHECKLIST
+----------------------------------------------------
+
+✓ Functional Interface
+✓ Lambda Syntax
+✓ Predicate
+✓ Consumer
+✓ Supplier
+✓ Function
+✓ Method Reference
+✓ Stream Pipeline
+✓ filter()
+✓ map()
+✓ flatMap()
+✓ reduce()
+✓ collect()
+✓ Optional
+✓ Parallel Stream
+
+If you can explain all these with one example each,
+you are interview-ready for most Java 8 questions
+asked for 1-2 years Java Developer roles.
+====================================================
+
+
+
+
+
+
+
+
+
+
+
+
+=========================
+OPTIONAL (Java 8)
+=========================
+
+What is Optional?
+-----------------
+Optional is a container object that may or may not contain a value.
+It is used to avoid NullPointerException (NPE) and to write cleaner code instead of checking null everywhere.
+
+Creating Optional
+-----------------
+
+1. Optional.of(value)
+   - Value must NOT be null.
+   - If null is passed, it throws NullPointerException.
+
+   Example:
+   Optional<String> name = Optional.of("Hsay");
+
+2. Optional.ofNullable(value)
+   - Can accept both null and non-null values.
+   - Most commonly used in real projects.
+
+   Example:
+   Optional<String> name = Optional.ofNullable(userName);
+
+3. Optional.empty()
+   - Creates an empty Optional.
+
+   Example:
+   Optional<String> name = Optional.empty();
+
+
+Checking Value
+--------------
+
+1. isPresent()
+   Returns true if value exists.
+
+   if(optional.isPresent()){
+       System.out.println(optional.get());
+   }
+
+2. ifPresent()
+   Executes the Consumer only if value is present.
+
+   optional.ifPresent(x -> System.out.println(x));
+
+
+Getting Value
+-------------
+
+1. get()
+   Returns the value.
+
+   optional.get();
+
+   NOTE:
+   Never call get() without checking.
+   If Optional is empty, it throws NoSuchElementException.
+
+   Interview Tip:
+   get() is generally discouraged unless you are sure a value exists.
+
+
+Default Value
+-------------
+
+1. orElse()
+
+   Returns the value if present,
+   otherwise returns the default value.
+
+   String name = optional.orElse("NA");
+
+   Use when default value is simple and already available.
+
+
+2. orElseGet()
+
+   Used when creating the default value is expensive.
+
+   String name = optional.orElseGet(() -> {
+       // some complex logic
+       return "NA";
+   });
+
+   It accepts a Supplier.
+
+
+Throw Exception
+---------------
+
+orElseThrow()
+
+Throws an exception if value is absent.
+
+optional.orElseThrow(AnyException::new);
+
+Equivalent to:
+
+optional.orElseThrow(() -> new AnyException());
+
+If exception requires a message:
+
+optional.orElseThrow(() ->
+    new AnyException("User not found")
+);
+
+
+Transforming Value
+------------------
+
+1. map()
+
+Transforms the value if present.
+
+Optional<String> upper =
+    optional.map(String::toUpperCase);
+
+If Optional is empty,
+map() is not executed.
+
+
+2. filter()
+
+Returns Optional only if condition matches.
+
+Optional<String> result =
+    optional.filter(s -> s.length() > 5);
+
+
+Common Interview Questions
+--------------------------
+
+Q. Difference between Optional.of() and Optional.ofNullable()?
+
+of()
+- Does NOT allow null.
+- Throws NullPointerException.
+
+ofNullable()
+- Allows null.
+- Returns Optional.empty() if value is null.
+
+
+Q. Difference between orElse() and orElseGet()?
+
+orElse()
+- Default value is created every time.
+
+orElseGet()
+- Supplier executes ONLY when Optional is empty.
+- Better when default value creation is costly.
+
+
+Q. Difference between isPresent() and ifPresent()?
+
+isPresent()
+- Returns boolean.
+
+ifPresent()
+- Executes Consumer if value exists.
+
+
+Q. Difference between get() and orElseThrow()?
+
+get()
+- Throws NoSuchElementException if empty.
+
+orElseThrow()
+- Allows throwing custom exceptions.
+- Preferred in Spring Boot.
+
+
+Real Spring Boot Example
+------------------------
+
+User user = userRepository.findById(id)
+        .orElseThrow(() ->
+            new ResourceNotFoundException("User not found"));
+
+This is one of the most common Optional usages in Spring Boot service classes.

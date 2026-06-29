@@ -1,0 +1,353 @@
+Collections:
+Provides classes and interfaces that help us manage the group of objects 
+before java 1.2 java rely on a variety of classes like vectors, stack, Hashtable, arraysto store and manipulate objects 
+they have a lot of problems like inconsistency, lack of interoperability , no common interface 
+Solved by Collections.
+
+It is built around interfaces 
+Iterable-> root interface
+Collections ->
+List, Set, Queue, Dequeue, Map.
+These are main interfaces they also have some implementations 
+
+Any class implementing Interable then we can apply for each loop to it 
+
+1)LIST-> ordered sequence, index based access
+Implementation -> ArrayList, LinkedList , Vector stack 
+
+ArrayList dynamically increases its size as values comes in it unlike arrays 
+list.add(n), 
+list.remove(index),  can also remove with values -> list.remove(Integer.valueOf(1)); //as it takes class
+, list.add(index, element), 
+list.contains(element),
+list.size();,
+list.toArray(new Type[0]); // type can be anything Integer, or any Class
+list.set(index,element)// this replaces the element while add shifts 
+list.sort(null);// null bcz it takes comparator 
+Collections.sort(list);
+Internal Working:
+it can grow and shrink its size , this dynamic sizing is achieved by creating a new array when current array is full and copying the elements to the new array 
+When we create a ArrayList its initial capacity is 10
+
+=> Adding an Element: Check Capacity -> Resize if Necessary -> Add the Element
+=> Resizing the element: Initial Capacity -> Growth Factor(when array gets full its capacity get multiplied by 1.5) -> Copying Elements (complexity : O(n))
+=> Removing Element: Check Bounds -> Remove Elements(after removing elements right to the removed element shifts to left to fill gap) -> Reduce Size (decremented by 1)
+
+We can define initial capacity also if we want to reduce the overhead of size inc and dec
+ArrayList<Integer> lst=new ArrayList<>(initialCapacity);
+we can print capacity with reflection 
+
+Arrays.asList(arr)// arr to list
+arr.asList(1,2,3,4); // fixed size list can't add and remove elements we can replace, implements list can't create with arraylist
+
+list.of(1,2,3,4);// unmodifiable can't even replace, can't even sort	
+
+
+
+
+
+Comparator:
+it is  an interface with which we can do custom ordering 
+has method "compare(T1,T2)" T1 and T2 are objects, it compare them 
+if compare returns -ve then o1 comes first then o2 if +ve o2 comes first then o1 if == then the they are same 
+has comparing method
+
+
+
+
+
+
+
+
+
+LinkedList:
+implements List interface 
+Stores element in nodes 
+Insertion and deletion is fast as compare to ArrayList
+Radom Access is slower as compare to ArrayList  
+Memory overhead as each node require extra memory to store the address of next element and previous element
+Get element time complexity O(n) in Arraylist O(1)
+Adding element to the start of array TC O(n) in linkedlist it is O(1)
+list.addFirst(elem); list.addLast(elem);
+list.add(elem)
+list.addAll();
+list.getFirst();
+list.getLast();
+removeFirst(elem)
+removeLast(elem)
+remove(index), remove(Object)
+list.removeIf(x->x%2==0);
+Create LinkedList on the fly
+LikedList<Integer> list=new LinkedList<>(Arrays.asList(1,2,3,4,5));
+list.removeAll(provide a new linked list here )
+if we are creating a LinkedList with the reference of List then we can't use methods specific methods of linked list, we can use list's methods 
+it can behave as stack as well as queue 
+
+
+
+
+Vector:
+it is there in java before collection framework but now it is the part of collection framework
+it is synchronized and thread safe, takes extra memory
+very useful in multithreaded env
+LinkedList and ArrayList are not thread safe 
+like ArrayList it does resizing of array with dynamic array 
+unlike ArrayList has method to check capacity vec.cpacity();
+here if element comes and capacity is filled in vector the size get doubled unlike arrayList where it grows with 1.5
+we can also control the capacity increment in the Vector constructor while creating it after initial Capacity 
+if give it will + not * like if given 3 and currentcapacity is it will become 11 not 24
+methods same as array
+if we use same ArrayList in 2 different threads and add some elements in it eg if we add 100 from both threads 
+then it will not give 200 in a result it will give less than that because it may access at the same time it will add 
+and that is not the case in Vector.
+
+
+
+
+Stack:
+extends vector
+as it extends vector we can do things out t=of the scope of stack as well like adding in between removing from middle etc, but not recommended 
+push pop peek search(elem) return index	(1 based)
+we can use arraylist and linked list both as a stack
+alist.add(1);// push
+alist.remove(alist.size()-1);//pop
+alist.get(alist.size()-1); //peek;
+it is not recommended to use arraylist as stack there is one more class ArrayDeque we can use it as stack 
+
+
+
+
+
+CopyOnRightArrayList:
+this is  thread safe and synchronized ArrayList
+use when there are too many read operations 
+in this whenever a write operation like adding or removing the elements in a list occurs so instead of modifying the existing arraylist it creates a new arraylist and modifications are applied to this new list 
+
+in normal ArrayList if do this:
+ for(Integer i: list){
+         list.add(4);
+         System.out.println(i);
+     }
+      it will give err as Concurrent modification Exception
+but will not print the element added during loop execution because 
+When a for-each loop starts on a CopyOnWriteArrayList, the iterator takes a snapshot (copy) of the list. It iterates over that snapshot, so any elements added later are not visible during the current iteration.
+CopyOnWriteArrayList for this only foreach takes snapshot 
+
+
+
+
+
+
+
+
+
+Map:
+It does not implements Collection it is the separate interface 	 
+unique key
+ map.put()
+map.get(key)
+map.getOrDefault(key, default value)
+map.putIfAbsent(key, value)
+map.containsKey(key)
+map.containsValue(value)
+map.remove(key)   and map.remove(key, value); if value and key does not match it is not going to delete 
+looping
+map.keySet()
+map.entrySet()-> getKey() and getValue() both 
+key can be null as well
+if we put a different value for same key already in map it is going to replace the value 
+HashMap-> not thread synchronize 
+
+constant time complexity O(1)
+
+Internal Working of HashMap:
+Basic components of hashmap 
+1)Key-> identifier used to retrieve the value
+2)value-> The data associated with key 
+3)Bucket-> A place where key value pairs are stored. Think of bucket as cells in a list or array 
+4)Hash Function -> converts a key to index (bucket location or storage)
+	Hash function is an algorithm that takes an input or key and returns a fixed sized string of bytes, typically a numerical value.
+	The output is known as hash code, hash value or simply hash. The primary purpose of a hash function is to map data of arbitrary size to data of fixed size.
+Characteristics of hash function:
+Deterministic: same input will always produce same output 
+Fixed output size: regardless of output size code has consistent size (eg: 32but, 64 bit)
+Efficient Computation: 
+
+How data stored in hashMap:
+1) Hashing the Key-> key passed through hash function to generate unique hashcode (Pans integer number). this hash code helps determine where the key value pair will be stored in the array (bucket array).
+
+2)Calculating the index: hash code then used to calculate an index int the array (bucket location) using :
+int index= hashcode % arraySize;
+this index decides which bucket will store the key value pair 
+
+By default the size of array is 16 
+3) Storing in the bucket:
+key-value pair stored in the bucket at the calculated index.
+Each bucket can hold multiple key-value pairs 
+this is called collision handling mechanism****
+Handling Collision:
+Since different keys can generate same index(called collision) hashmap uses technique to handle this situation. 
+
+[ on every index of bucket array linked list is stored but in java 8 we use balanced binary search tree or RB tree( as linked list uses linear search to search the element and it takes a lot of time), in case of collision it has pointer to next node or if multiple  kv pairs map to the same bucket
+basically what happen the linkedlist get converted to red black tree after certain threashold (default 8) thereashhold is called as Treefy Threashhold
+time complexity in case if RB tree -> O(logn )
+
+when they retireieved hashmpa traverse the linked list of bst untill it founds the match 
+
+How data is retrieved from hash map :
+1)hashing the key-> similar to insertion 
+2) finding the index-> hash code is used to find the index of the bucket where the key value pair is stored 
+3)Searching the bucket -> once the correct bucket is found it checks for the key in that bucket. if it finds the key it return the associated value .
+
+
+HashMap Resizing(Rehashing):
+HashMap has an internal array size, which is 16 by deafult when the numeber of elements (key-value) pair grows to certain load factor(defualt 0.75) hashmap automatically resizes the array to hold more data. This is called Rehashing.
+
+The default array size is 16 so when more than 12 elements (16*0.75) are inserted, the hashmap will resize.
+
+In hashmap constructor as well we can give initial capacity as and load factor  <IC, LF>
+All entries are rehashed (i.e their positions are recalculated) and placed into the new array 
+
+Time Complecity: O(1) without coliision, with collsion O(n) with balanced BST it is O(logn).
+in case of constiansKey: TC same 
+in case of caontinsValue: TC O(n)  for both (WC and BC)
+size -> O(1) for all
+HashCode generates by playing with memeory address
+in case of collitiosn equals methods is used ti check the index match 
+
+
+
+Linked HashMap:
+extends hashmap 
+linkedHashMap has a double linked list that maintains the order of element in which we have putten them
+its bit slow than hashmap
+like hashmap constructor here as well we can give initial capacity load factor and access order (this is extra)
+by default access order is false 
+if we mark it true then the least recently used shifts to the last as it uses LRU cache 
+
+Use case: can't store everything in the cache so with this we can remove the lru thing 	as it went to top 
+it is not thread safe
+**removeEldestEntry()
+
+
+
+
+
+WeakHashMap:
+an entry in week hashmap will automatically removed when its key is no longer in ordinary use 
+if we create a key directly as string it will get stored in a strong pool and is strong reference 
+so instead of doing like "key" do it like new String("key");
+
+
+
+
+
+String key1 = new String("key");
+String key2 = new String("key");
+key1==key2 false		//== compares references (addresses), not the content.	
+key1.equals(key2) true //equals() compares the characters inside the String.
+
+
+as hashmap also uses equals() it is going to replace the element
+
+Identity HashMap:
+
+as hashmap also uses equals() it is going to replace the element ---> not the case in identity hashmap as it uses the hashcode of object it is going to put both elements 	 	
+it uses == not equals()
+
+
+
+
+
+Comparable:
+for custom sorting logic we use comparator but if we have to tell particular class that you have to sort in this way we use comparable 
+
+if we do list.sort(null)// it will give error as it does not have the custom order of sorting 
+here list is a list of objects 
+comparable is natural ordering while comparator gives option to sort as per requirement 
+in comparable we implement comparable interface in the target class and inside it we implements the comparreTo(obj) method, there we can sort as per single logic only 
+comparator takes 2 obj and comparable takes 1 obj 
+in place of second object campareTo takes instance of class as this.name as it is inside the class	
+use it like Integer.compareTo() or integer.compare()
+
+
+
+
+
+
+
+SortedMap; it is an interface extending map 
+if we have to sort things on the basis of keys then we have to use sortedMap 
+its implementation class is TreeMap
+have some specific methods that normal map does not have:
+map.firstKey();
+map.lastKey();
+map.headMap(toKey);// goes to the key from start toKey-> excluded.
+map.tailMap(fromKey);// goes to end from key fromKey-> included 	
+map.subMap();
+
+if we are using Integer, String etc. we don't have to pass compartor but if using Student or some custom calls object then we have to declare compareTo or comparator in it for sorting 
+as it has to sort if we give key as null it will give nullpointerexception 	
+internally it uses RedBlack Tree
+
+TreeMap extends navigable map and navigable map extends sorted map 
+navigable Map provides  options such as finding closest matching key or retrieving the map in reverse order 	 
+
+
+
+
+HashTable(legacy class):
+extends map like hashmap
+it is synchronized 
+can't take null value in key and values both 	
+it is replaced by concurrent hashmap 	
+only linked list in case of collision 
+all methods are synchronized read write and all	 
+while it is not that mandatory to stop reading 	 
+
+
+
+Concurrent HashMap:
+extends map 
+have concurrency 
+in java 7 -> segment base locking -> 16 segments  -> smaller hashmap 
+only the segment being written to or read is locked
+read: do not require locking unless there is a write operation happening in the same segment 	
+write: lock 
+
+
+java 8-> no segmentation
+	-> uses Compare and Swap approach  --> no locking except resizing or collision(bcz here we have to play with linked list)	
+	eg: Thread A last saw --> x=45;
+		Thread A work --> x=50;
+		checks if x is still 45 then change it to 50 else do not change ad retry 
+it may gives a long loop if so if thread is failing for too long to change so it gets stop for some time to save cpu wastage 
+
+inn concurrent hashmap if element comes after reaching the capacity it does not get double like normal maps here it uses incremental resizing		
+
+
+
+
+ImmutableMap:
+let map1 is normal map to make it Immutable map use:
+Map<Integer, Integer> map2= Collections.unmodifiableMap(map1); /// it is just a view of normal map 
+can change map1 but can't change map2 if tried give unsupportedoperatoinException
+it's limitation is that it is only the view if normal map one can change the map1 now even 
+
+Solution:
+map3= Map.of('key1',12,'key2',23,'key3',46);// limited to 10 entries only 
+can't modify map3 
+
+for more than 10 entries use:
+map4= Map.ofEntries(Map.entry('key1',12),Map.entry('key1',12)------------);
+
+
+
+
+EnumMap:
+if all the keys in the map are from particular Enum then it is good to create a EnuMap as it knows all the keys i advance 
+no hashing no resizing as it already knows the size of Enum as we put values to map with the key in Enum it get associated to that key in Enum
+Syntax: Map<String,Integer> map=new EnumMap<EnumName.class>;
+maintains order 
+
+	 
