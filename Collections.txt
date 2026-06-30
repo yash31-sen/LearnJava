@@ -350,4 +350,37 @@ no hashing no resizing as it already knows the size of Enum as we put values to 
 Syntax: Map<String,Integer> map=new EnumMap<EnumName.class>;
 maintains order 
 
+
+
+
+
+
+
+Skip List HashMap:
+data stored in skiplist 
+sorted and thread safe tree map 
+skip list is probabilistic data structure allows for efficient search insertion and deletion operations 
+it has layered list in which data is store in layers top skip most elements followed by next layers and last layer has all the elements 
+it searches in first layer then 2nd then 3rd 
+TC: O(logn)
+can use in multithreaded environment
+
+
+
+
+Iterator vs Interable:
+Every Class or interface implementing iterator can be used with for each loop 
+for (Integer i: list){
+
+}
+
+Iterator<Integer> itr= list.iterator();		// likst.listIterator() has more methods like hasPrevious()
+while(itr.hasNext()){
+Integer number=itr.next();
+
+}
+
+internal working of iterator 
+in iterator we can use itr.remove() method in between iteration as well that is not possible in normal arraylist 
+
 	 
