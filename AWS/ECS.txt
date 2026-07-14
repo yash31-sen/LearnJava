@@ -1,0 +1,211 @@
+# ECS (Elastic Container Service) - Interview Revision Notes
+
+## What is ECS?
+
+* Fully managed **container orchestration service** by AWS.
+* Used to deploy, manage and scale **Docker containers**.
+* Supports **AWS Fargate (Serverless)** and **EC2** launch types.
+* Images can be stored in **Amazon ECR**, Docker Hub or other container registries.
+
+---
+
+## Why ECS?
+
+Without ECS:
+
+* Create and manage EC2
+* Install Docker
+* Deploy containers manually
+* Handle scaling and failures
+
+With ECS:
+
+* Just provide the Docker image and configuration.
+* ECS schedules, runs and monitors containers.
+* Automatically replaces failed containers.
+* Supports Auto Scaling and Load Balancer integration.
+
+---
+
+## Launch Types
+
+### AWS Fargate
+
+* Serverless
+* No EC2 management
+* Pay for CPU & Memory used
+* Best for most applications
+
+### EC2
+
+* Runs containers on EC2 instances
+* More control
+* User manages EC2
+* Suitable for custom or predictable workloads
+
+---
+
+## ECS Components
+
+### Cluster
+
+* Logical group of resources
+* Hosts Tasks and Services
+
+### Task Definition
+
+* Blueprint of the application
+* Contains Image, CPU, Memory, Ports, IAM Role, Environment Variables, Logging, Volumes
+
+### Task
+
+* Running instance of a Task Definition
+
+### Service
+
+* Maintains desired number of Tasks
+* Restarts failed Tasks
+* Supports Auto Scaling
+* Can attach Load Balancer
+
+---
+
+## Ways to Run Containers
+
+1. Run Task → One-time or batch jobs
+2. Create Service → Long-running applications
+3. Update Service → Deploy new application version
+
+---
+
+## Networking
+
+* **awsvpc** (Most common, required for Fargate)
+* Bridge
+* Host
+
+---
+
+## Load Balancing
+
+* Application Load Balancer (ALB)
+* Network Load Balancer (NLB)
+
+---
+
+## Auto Scaling
+
+Scale based on:
+
+* CPU
+* Memory
+* CloudWatch Metrics
+
+---
+
+## IAM Roles
+
+**Task Execution Role**
+
+* Pull image from ECR
+* Send logs to CloudWatch
+
+**Task Role**
+
+* Allows application to access AWS services (S3, DynamoDB, SQS, etc.)
+
+---
+
+## Storage
+
+* Amazon EFS
+* Docker Volumes
+* Bind Mounts (EC2)
+
+---
+
+## Monitoring
+
+* CloudWatch
+* Container Insights
+* AWS X-Ray
+
+---
+
+## Deployment Strategies
+
+* Rolling Update (Default)
+* Blue/Green Deployment
+
+---
+
+## High Availability
+
+Deploy across:
+
+* Multiple Availability Zones
+* Multiple Subnets
+
+---
+
+## Pricing
+
+* ECS Control Plane is **Free**
+* Pay for:
+
+  * Fargate or EC2
+  * Load Balancer
+  * EFS
+  * CloudWatch Logs
+  * Data Transfer
+
+---
+
+## ECS Workflow
+
+Docker App
+→ Build Image
+→ Push to Amazon ECR
+→ Create ECS Cluster
+→ Create Task Definition
+→ Create Service
+→ Launch Tasks
+→ (Optional) Attach ALB
+→ Users Access Application
+
+---
+
+## ECS vs EC2
+
+* EC2 → Manage servers yourself
+* ECS → AWS manages container orchestration
+
+---
+
+## ECS vs EKS
+
+* ECS → AWS-native, easier
+* EKS → Kubernetes, more flexible and complex
+
+---
+
+## ECS vs Fargate
+
+* ECS = Container orchestration service
+* Fargate = Serverless compute engine that runs ECS Tasks
+
+---
+
+## Interview One-Liners
+
+* ECS = Fully managed container orchestration service.
+* Runs Docker containers.
+* Supports EC2 and Fargate.
+* Cluster = Group of resources.
+* Task Definition = Blueprint.
+* Task = Running container.
+* Service = Maintains Tasks + Auto Scaling.
+* Fargate requires **awsvpc** networking.
+* ECS integrates with ECR, ALB, IAM, CloudWatch, EFS and Secrets Manager.
+* ECS control plane is free; you pay for the underlying AWS resources.
+* Use ECS when you need container orchestration without managing Kubernetes.

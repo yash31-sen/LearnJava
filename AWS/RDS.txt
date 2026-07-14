@@ -1,0 +1,29 @@
+RDS:
+can create 40 databases
+allocated storage: 100TB can inch in organizational account 
+DB cluster: grp of dbs 
+Snapshot: dbs backup to protect from crash 
+
+
+Create db -> 2 options:
+Standard create (all configuration we make) simple checkboxes 	
+
+Easy Create (
+
+30 gb storage free for free tier 
+never make db publicaly accessible 
+pswd auth
+creating db can take upto 20 min after giving all configurations 
+
+
+
+
+Connecting EC2 to RDS
+Need Client on EC2 and RDS is server 
+In url p is password and P is for port 
+if we make our rds private that is recommended so we have to register the ec2 instance or where ever we are accessing the db to RDS
+Connected Compute Resource  -> select instance 	 
+as soon as we did this it will create a vpc with ec2 and rds 
+one more way to do this is to create a role with full access to RDS and cloudwatch (as it comes with rds) and then assign that role to ec2
+
+

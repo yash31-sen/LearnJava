@@ -384,3 +384,26 @@ internal working of iterator
 in iterator we can use itr.remove() method in between iteration as well that is not possible in normal arraylist 
 
 	 
+
+
+
+
+SET:
+set are mostly same as map 
+as key in map itself a set
+we can create any set or map synchronized with 
+Collections.synchronizedSet(set);//Collections is static class 
+here all methods of set get wrapped in a synchronized block and all methods blocking 
+in place of this use ConcurrentSkipLIstSet
+sorted
+weakly consistent 
+if we insert anything while iterating it will get reflected in the same iteration 
+it has built in thread safety 
+set.of() can give more than 10 entries as well
+
+
+CopyoWriteArraySet:
+not sorted
+uses internal array
+create a copy of array when insertion takes place 
+

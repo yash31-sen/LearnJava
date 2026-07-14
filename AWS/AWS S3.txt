@@ -1,0 +1,49 @@
+S3 complete:
+S3 bucket is object based storage 
+as we store any file in s3 it is going to be stored as an object not as a file 
+that object has one unique reference , with this reference we can control the access to our s3 it can be read write or anything 
+we can setup versioning as well to the object 
+S3 bucket is a regional service 
+bucket name-> must unique globally 
+we can copy setting from an existing bucket 
+ACL-> access control layer if we want to enable the granular access permission for our bucket we can do with the help of this 
+block public access , bucket versioning, tags (key value, it is an unique identifier)
+durability of aws s3 bucket is 99.99999999999%(11 9s).
+as this bucket data is stored in 3 AZs
+
+Rules and Policies:
+1) Name: must be unique although it is regional 
+2) Region: belong to one region 
+3) Object size: we can upload the file or object with the size of upto 5TB
+
+Accessing S3 using CLI:
+download aws cli-> 
+aws configure 
+ask for access id and key (get from account)
+
+aws s3 ls // bucket present in aws account in particular region 
+aws s3 ls s3://bucketURL
+aws s3 mv s3:// sourceBucket s3://destinationBucket 
+
+S3 Storage Classes:
+1)S3 Standard: default, highly durable, ideal for frequent access, low latency 
+2) S3 Standard IA(infrequent access): cost effective , suitable for infrequent access, support high avl.
+3) S3 intelligent- tiering: move data btw 2 access tires, optimize cost as per usage pattern.
+4) S3 one Zone IA: low cost , suitable for IA, single AZ, reduce durability.
+5) S3 Glacier Instant Retrieval: low cost, archival data, retrieval in milliseconds.
+6) S3 Glacier Flexible retrieval: low cost for archival, flexible retrieval options mins to hours.
+7) S3 Glacier Deep archive: Low cost , retrieval time is 12 hour  
+cost decreases as we go 1 to 7
+
+
+AWS Price calculator:
+can check prizes for all services 	 
+
+Requestor Pay:
+if we have 2 accounts ac1 and ac2 let say s3 bucket is in ac1 and ac2 want to access  s3 bucket of ac1 there will be some charges,
+we can transfer the charges to ac2 with this 
+s3 bucket -> properties -> requestor pay 
+
+object tagging:
+aws s3 buckets have tags but we can provide more tags to the objects in the bucket 
+it will help if we want to transfer that particular object to other s3 bucket or account 

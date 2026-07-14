@@ -1,0 +1,341 @@
+AWS LAMBDA:
+Lambda is just a executer that takes code as an input and generates output 
+code can be java, python, nodejs, golang etc 
+Lambda advantage over EC2:
+No server Setup
+no start and stop
+no additional cost (lambda is pay per go )
+serverless
+
+We have to create lambda and then write code for lambda and deploy it 
+
+to test the lambda we have to write the test event 
+there we can provide jsons 
+
+adding code from zip in lambda:
+write code in ide, install all the dependencies and create a zip of it 
+add this zip file to lambda 
+if the file is large it will not shown in lambda dashboard, can be viewed from code editor 
+we can also send this file to lambda from s3 
+just upload the zip file to s3 and then provide s3 url to lambda upload section
+
+
+Lambda Function URL:
+inside lambda function -> configuration-> function url
+
+while creating this url we can make it public or assign role based IAM
+even if it is public then also some IAM rules will be applied to it 
+if we open the url in browser then we will get the output of lambda there 
+
+if we choose the private method of url creation then we have to provide the was account credentials to access it 
+
+Environment Variable:
+to create env variables : Configuration -> aws env variable 
+
+
+Lambda Layers:
+lambda library can be created once and can be used multiple times with multiple lambdas 
+Lambda Dashboard -> Additional Resources -> lambda layers 
+
+here as well we have to provide the code in the form of zip file or aws
+ARN is important 
+then in the lambda function go to add layers, there are multiple options like aws layer, custom layer and layer with arn.
+we have to import that layer to main lambda function code 
+
+
+
+
+
+
+
+
+
+
+
+
+
+***************************************
+AWS Lambda (Interview Notes)
+What is AWS Lambda?
+Serverless compute service.
+Executes code without managing servers.
+Runs code only when triggered by an event.
+Supports Java, Python, Node.js, Go, .NET, Ruby, Custom Runtime.
+Pay only for execution time (Pay Per Use).
+Advantages over EC2
+No server setup or management.
+No need to start or stop servers.
+Automatic scaling.
+High availability by AWS.
+Pay only when the function executes.
+Suitable for event-driven applications.
+Lambda Workflow
+Create Lambda
+      ↓
+Write Code
+      ↓
+Deploy
+      ↓
+Create Test Event
+      ↓
+Execute
+      ↓
+View Logs (CloudWatch)
+Creating a Lambda
+Go to Lambda Dashboard.
+Create a new Lambda Function.
+Select Runtime (Java, Python, Node.js, etc.).
+Write or upload the code.
+Deploy the function.
+Test using Test Event.
+Test Event
+Used to test Lambda without an actual trigger.
+Input is provided in JSON format.
+
+Example:
+
+{
+  "name": "Yash"
+}
+Deployment Methods
+1. Write code in Lambda Console
+Suitable for small functions.
+2. Upload ZIP File
+Write code in IDE.
+Install all required dependencies.
+Create ZIP file.
+Upload ZIP to Lambda.
+3. Upload ZIP from S3
+Upload ZIP file to S3.
+Select "Upload from Amazon S3".
+Provide S3 location.
+4. Docker Container Image
+Used for large applications and custom environments.
+Lambda Triggers (Very Important)
+
+Lambda executes only when an event (trigger) occurs.
+
+Common Triggers:
+
+API Gateway
+S3 (File Upload)
+SQS
+SNS
+EventBridge (CloudWatch Events)
+DynamoDB Streams
+CloudFront
+Cognito
+
+Interview Point:
+
+Lambda is event-driven. It does not run continuously like an EC2 instance.
+
+Lambda Function URL
+
+Configuration → Function URL
+
+Authentication Types:
+
+Public (NONE)
+IAM Authentication (AWS_IAM)
+Public URL can be accessed by anyone (subject to resource policies).
+IAM Authentication requires AWS credentials.
+Can be used instead of API Gateway for simple HTTP APIs.
+Environment Variables
+
+Configuration → Environment Variables
+
+Used for:
+
+Database URL
+API Keys
+Bucket Names
+Secret Values
+Application Configuration
+
+Best Practice
+
+Do not hardcode sensitive information.
+Use AWS Secrets Manager or Parameter Store for secrets.
+Lambda Layers
+Reusable libraries shared across multiple Lambda functions.
+Avoids uploading the same dependencies repeatedly.
+Maximum 5 layers per Lambda function.
+
+Creation:
+
+Lambda Dashboard
+        ↓
+Additional Resources
+        ↓
+Lambda Layers
+
+Can upload:
+
+ZIP File
+ARN of an existing layer
+
+After creation:
+
+Lambda Function
+      ↓
+Add Layer
+
+Layer Types:
+
+AWS Layer
+Custom Layer
+Layer using ARN
+IAM Execution Role (Very Important)
+
+Lambda cannot access AWS services directly.
+
+It requires an IAM Role.
+
+Example Permissions:
+
+Read from S3
+Write to DynamoDB
+Send SNS Notifications
+Access Secrets Manager
+Write CloudWatch Logs
+
+Interview Point:
+
+Lambda assumes an IAM Role whenever it executes.
+
+CloudWatch Logs
+
+Every Lambda execution generates logs.
+
+CloudWatch stores:
+
+Logs
+Errors
+Execution Duration
+Invocations
+Metrics
+
+Useful for:
+
+Debugging
+Monitoring
+Troubleshooting
+Cold Start
+
+When Lambda hasn't been used for some time:
+
+AWS creates a new execution environment.
+Initialization causes a delay.
+Called Cold Start.
+
+Subsequent requests:
+
+Reuse the existing environment.
+Called Warm Start.
+
+Cold Starts are more noticeable in Java applications.
+
+Memory Allocation
+
+Configurable from:
+
+128 MB to 10 GB
+
+More Memory:
+
+More CPU allocated.
+Faster execution.
+Higher cost.
+Timeout
+
+Maximum execution time:
+
+1 second to 15 minutes
+
+If execution exceeds timeout:
+
+Lambda terminates automatically.
+Concurrency
+
+Lambda automatically scales.
+
+Types:
+
+Reserved Concurrency
+Provisioned Concurrency
+
+Provisioned Concurrency:
+
+Keeps Lambda warm.
+Reduces Cold Start latency.
+Scaling
+Automatically scales according to incoming requests.
+No manual scaling required.
+Pricing
+
+Charges are based on:
+
+Number of Requests.
+Execution Duration.
+Allocated Memory.
+
+No cost when Lambda is idle.
+
+Common Use Cases
+REST APIs
+Backend Microservices
+Image Processing
+File Upload Processing
+Scheduled Jobs
+Notifications
+Data Transformation (ETL)
+IoT Applications
+Automation Scripts
+Lambda vs EC2
+Lambda	EC2
+Serverless	Server Management Required
+Event Driven	Always Running
+Auto Scaling	Manual/Auto Scaling Groups
+Pay Per Execution	Pay While Running
+Max 15 Minutes Execution	No Execution Time Limit
+No Infrastructure Management	Infrastructure Managed by User
+Common Interview Questions
+What triggers a Lambda Function?
+API Gateway
+S3
+SQS
+SNS
+EventBridge
+DynamoDB Streams
+Cognito
+CloudFront
+Why is IAM Role required?
+To securely allow Lambda to access other AWS services without storing credentials.
+What is a Cold Start?
+Delay caused when AWS creates a new execution environment for an inactive Lambda.
+Where are Lambda logs stored?
+Amazon CloudWatch Logs.
+What is the maximum execution time?
+15 Minutes
+What are Lambda Layers?
+Reusable dependency packages shared across multiple Lambda functions.
+Quick Revision (1 Minute)
+Serverless compute service.
+Event-driven execution.
+Supports Java, Python, Node.js, Go, etc.
+No server management.
+Auto Scaling.
+Pay per execution.
+Deploy using Console, ZIP, S3, or Docker Image.
+Uses JSON Test Events.
+Triggered by API Gateway, S3, SQS, SNS, EventBridge, etc.
+Uses IAM Execution Role for AWS service access.
+Stores logs in CloudWatch.
+Supports Environment Variables.
+Reusable code through Lambda Layers (Max 5).
+Memory: 128 MB – 10 GB.
+Maximum execution time: 15 Minutes.
+Cold Start = First execution delay.
+Warm Start = Reused execution environment.
+Automatically scales with incoming requests.
