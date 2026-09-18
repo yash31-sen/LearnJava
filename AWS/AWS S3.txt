@@ -47,3 +47,53 @@ s3 bucket -> properties -> requestor pay
 object tagging:
 aws s3 buckets have tags but we can provide more tags to the objects in the bucket 
 it will help if we want to transfer that particular object to other s3 bucket or account 
+we can create upto 10 tags for an object in s3 
+it I in key value pair 	
+
+
+Bucket Policies:
+we can create a policy and then we have to assign that policy to the s3 from root account 
+we can define in the policy what to allow user or what to not 
+
+
+if we turn off block public access then the bucket will be avl anywhere I the internet
+we also have to give policy to access it 
+can use policy generator to get policy code
+
+we can provide access to list object
+
+
+Pre Signed URL:
+these are urls we can share the objects with some one 
+they have some conditions
+we can define for how much time we want this url to be accessible (for example if we specify 5m then after 5m it will not be accessible)
+
+
+S3 Bucket Security:
+1)SSE-S3 encryption (Server side encryption):
+default
+go to bucket name -> edit default encryption
+
+2)S3 SSE-KMS encryption:
+in this we create an asymmetric key on KMS( Key management Service)
+after generating got to edit default enc then selct ss3-kms and select key or give arn 
+
+3)In transit Encryption: we can access the object url with https and http, so disabling the http access is In transit encryption 
+for this go to bucket policy and add policy there
+It must have aws:SecureTrasport:  "true"	
+
+4)Bucker Versioning
+by default it is disabled.
+
+5)Bucket Replica and Batch job 
+In this we create 2 buckets and replicate the content of one bucket to other bucket 
+in source bkt got to replication rules 
+name replication rule 
+select what you want to copy 
+select the destination bucket 
+select IAM role 
+if there are already some existing objects then it will ask to add them as well
+
+
+
+Cloud Front Distribution:
