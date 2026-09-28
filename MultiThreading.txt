@@ -1,156 +1,1452 @@
-CPU: it is a processing unit 
-It has cores inside it, previously there is only 1 code inside cpu but now a days it has multiple cores 
-like a quad core cpu has 4 cores, for an instance once core could hand your web browser another music player and so on.
+# Java Multithreading — Interview Revision Notes
 
-Program: set of instruction written in a particular programming language 
-eg: ms word
+## 1. CPU, Core, Program, Process, Thread
 
-Process:  it is an instance of program, when we run a program os start the process for that program 
+### CPU
 
-Thread: It is the smallest unit of execution with in the process. A process can have multiple threads, which share the same resources but can run independently 
-eg: chrome using multiple threads for different tabs 
+CPU is the **processing unit** that executes instructions.
 
-Multitasking:
-allows os to run multiple processes simultaneously. on single core this is done through time sharing, rapidly switching between tasks. on multi core true parallel execution occurs with tasks distributed across cores.
-managing resources between the completely sperate programs .
+A CPU can have multiple **cores**. Each core can execute a thread independently.
 
-Multithreading :
-it enhances the efficiency of Multitasking by breaking down individual tasks into smaller subtasks or threads.  These threads process simultaneously making use of the cpu capabilities.
-managing resources within a single process
+Example:
 
-eg: web browser using different threads for downloading playing video etc.
+```text
+Quad-Core CPU
+Core 1 → Task A
+Core 2 → Task B
+Core 3 → Task C
+Core 4 → Task D
+```
 
+For example, one core may handle work related to a web browser while another handles work from a music player.
 
-In single core system both threads and processes are managed by os schedular through time slicing and context switching to create a illusion of simultaneous execution.
+### Program
 
-In multi core systems:
-both threads  and processes can run in true parallel on different cores, with the os scheduler distributing tasks across the cores to optimize performance 
+A **program** is a set of instructions written in a particular programming language.
 
-Time Slicing-> divides the cpu time into small intervals called time slices  or quanta.
-os scheduler allocate the time slice to diff process or threads 
+Example:
 
-Context Switching -> saving the state of currently running process and loading the state of next process or thread.
-when process's Time slice expires os scheduler performs the context switching to move the cpu focus to another process or thread by pausing the current one 
+```text
+MS Word
+Chrome
+Java Application
+```
 
+### Process
 
+A **process** is a running instance of a program.
 
+When we run a program, the OS creates a process for it.
 
-HOW JAVA HANDLES MULTITHREADING:
-Multithreading in java is a part of java.lang package 
-in single threaded env it is managed by jvm and os 
-Time slicing is used to manage threads 
+```text
+Program
+   ↓
+Running instance
+   ↓
+Process
+```
 
-In multi core env JAVA multithreading take full advantage of available cores 
-jvm distributers cores around multiple cores allowing true parallel execution
-When a java program starts one thread start running immediately that is main thread (responsible for executing main method)4
+A process has its own memory and resources.
 
-To achieve multithreading in java we can either create Thread class or either implement runnable interface 
+### Thread
 
-if extending thread class we have to override the run method to define the code that constitute the new thread.
-start is called to initiate the new thread
+A **thread** is the smallest unit of execution within a process.
 
-if we are implementing the runnable interface then rest thing remain same just we create the object of Thread along with the object of class 
-have to use implements if a class is already extending other class 
-then call threadObject.start();
-with thread.getState() we can get the state of thread 
-thread1.join()// waits for thread1 to complete first 
-Thread.currentThread().getPriority();
+A process can have multiple threads. These threads **share the resources of the same process** but can execute independently.
+
+Example:
+
+```text
+Chrome Process
+ ├── Thread → Download
+ ├── Thread → Play Video
+ ├── Thread → Handle UI
+ └── Thread → Network communication
+```
+
+---
+
+# 2. Multitasking vs Multithreading
+
+### Multitasking
+
+Multitasking means managing/running **multiple processes**.
+
+Example:
+
+```text
+Chrome Process
+MS Word Process
+Music Player Process
+```
+
+These are separate processes managed by the OS.
+
+* **Single-core CPU:** OS uses time sharing and context switching to create the illusion of simultaneous execution.
+* **Multi-core CPU:** different processes can actually execute in parallel on different cores.
+
+### Multithreading
+
+Multithreading means managing **multiple threads within a single process**.
+
+```text
+Java Application
+ ├── Thread 1
+ ├── Thread 2
+ └── Thread 3
+```
+
+Threads share the resources of their process.
+
+Example:
+
+```text
+Web Browser
+ ├── Downloading
+ ├── Playing video
+ └── Handling UI
+```
+
+### Simple Difference
+
+> **Multitasking → multiple processes**
+
+> **Multithreading → multiple threads within a process**
+
+Multithreading helps a process perform multiple tasks concurrently and make better use of available CPU resources.
+
+---
+
+# 3. Single-Core vs Multi-Core
+
+### Single-Core System
+
+Both processes and threads are managed by the OS scheduler through:
+
+```text
+Time Slicing
+      +
+Context Switching
+```
+
+This creates the **illusion of simultaneous execution**.
+
+```text
+Thread A → CPU
+Thread B → CPU
+Thread C → CPU
+Thread A → CPU
+...
+```
+
+Only one thread can execute on the core at a particular instant.
+
+### Multi-Core System
+
+Multiple threads/processes can execute **in parallel** on different cores.
+
+```text
+Core 1 → Thread A
+Core 2 → Thread B
+Core 3 → Thread C
+Core 4 → Thread D
+```
+
+The OS scheduler distributes work across available cores.
+
+---
+
+# 4. Time Slicing
+
+**Time slicing** divides CPU execution time into small intervals called:
+
+> **Time slices / Time quanta**
+
+The OS scheduler allocates these time slices to different processes or threads.
+
+Example:
+
+```text
+Thread A → CPU → Thread B → CPU → Thread C → CPU
+```
+
+When a thread's time slice ends, the scheduler can give CPU time to another runnable thread.
+
+---
+
+# 5. Context Switching
+
+**Context switching** means:
+
+> Saving the state of the currently executing process/thread and loading the state of another process/thread.
+
+Example:
+
+```text
+Thread A running
+      ↓
+Save Thread A state
+      ↓
+Load Thread B state
+      ↓
+Thread B running
+```
+
+Context switching allows multiple processes/threads to share CPU time.
+
+It also has overhead, so creating too many threads is not always beneficial.
+
+---
+
+# 6. How Java Handles Multithreading
+
+Java provides multithreading support mainly through:
+
+```text
+java.lang
+java.util.concurrent
+```
+
+The `Thread` class is part of `java.lang`, while advanced concurrency utilities are available in `java.util.concurrent`.
+
+When a Java program starts, the **main thread** starts executing the `main()` method.
+
+```text
+JVM starts
+   ↓
+Main Thread
+   ↓
+main()
+```
+
+Java threads are scheduled by the JVM and underlying OS.
+
+On multi-core systems, multiple Java threads can execute in parallel on different CPU cores.
+
+---
+
+# 7. Creating a Thread
+
+There are two traditional ways to create a thread.
+
+## Method 1: Extend `Thread`
+
+```java
+class MyThread extends Thread {
+
+    @Override
+    public void run() {
+        System.out.println("Task running");
+    }
+}
+
+MyThread t = new MyThread();
+t.start();
+```
+
+We override `run()` to define the task that the new thread will execute.
+
+### `start()` vs `run()`
+
+```java
+t.start();   // starts a new thread
+t.run();     // normal method call; no new thread
+```
+
+`start()` internally causes the JVM to execute the `run()` method on the new thread.
+
+---
+
+## Method 2: Implement `Runnable`
+
+```java
+class MyTask implements Runnable {
+
+    @Override
+    public void run() {
+        System.out.println("Task running");
+    }
+}
+
+MyTask task = new MyTask();
+
+Thread t = new Thread(task);
+
+t.start();
+```
+
+### Why use `Runnable`?
+
+Java supports **single class inheritance**.
+
+If a class already extends another class, it cannot extend `Thread`.
+
+```java
+class MyClass extends SomeOtherClass implements Runnable {
+}
+```
+
+Therefore, implementing `Runnable` provides more flexibility.
+
+---
+
+# 8. Important Thread Methods
+
+### Get current thread
+
+```java
+Thread.currentThread();
+```
+
+### Get thread name
+
+```java
 Thread.currentThread().getName();
-thread.yeild()// give chance to other threads as well 
-t.setPriority(p); MIN_PRIOIRTY=1, NORM_PRIORITY=5 and MAX_PRIORITY=10;
-we can name thread as well by passing name in its constructor but we also have to create a constructor while extending thread 
+```
 
-what ever threads we are using these are user threads 
-one more type is demon threads these runs in background 
-JVM will not wait for demon threads to terminate 
-thread.setDemon(true); 
-if we are running a infinite loop on user thread it will go infinite but for demon thread it will not 
+### Get thread priority
 
-Thread Life Cycle:
-1)New : A thread is in this state when it is created but not yet started 
-2)Runnable: After the start method is called, the thread becomes runnable. it is ready to run and waiting for cpu time.
-3)Running: The thread is in the state when it is executing. // this method not there in java because runnable means it is ready to run or running 
-4)Blocked/ Waiting: When waiting for resource or for other thread to perform action.// thread.sleep(); waiting or timed_waiting 
-5)Terminated: when finished executing.
+```java
+Thread.currentThread().getPriority();
+```
 
+### Get thread state
 
-Synchronization:
-when we are running 2 threads with same object let say counter so if t1 and t2 both simultaneously calling counter it is possible that they will get overlapped and there is change in expected output.
-to encounter this we use Synchronized keyword
-in a method use synchronized keyword so that it will run completely only then after other methods flow starts 	
-the part or section of program where we are updating or using shared resources is called Critical Section.
-if threads are running in a concurrent manure then output unexpected op will come 
-and when multiple threads are working on same resources bcz of that their timing got disturbed then it is called race condition. 
-we can avoid race condition by using synchronized keyword and that is called mutual exclusion it ensures that multiple threads can't access CS at the same time 
+```java
+thread.getState();
+```
 
+### Wait for another thread
 
+```java
+thread.join();
+```
 
-Locks in java:
- as soon as we use synchronized keyword in java locks get applied 
-java has 2 types of lock 
-1) Intrinsic lock-> with synchronized keyword automatically applied 
-2)Explicit Locks (Manual Locks) -> more advanced locks, we can control ourslef when to lock and when to unlock using the java.util.concurrent.locks.
+### Pause current thread
 
-even if we area using sleep method in particular thread then also other thread can't use the resource if synchronized keyword 
+```java
+Thread.sleep(1000);
+```
 
-every object already have one lock, synchronized uses that lock 	
-lock is an interface to us explicit lock we have to create an object of it 	 	
-private final Lock lock = new RentrantLock();// ReinterantLock is the implementation of lock interface 
-ReinternatLock can use lock in inner method even if it outer method has lock.lock() but it does not mean that other thread can alos use it bcz it maintains the count of lock 	
+### Change priority
 
-lock.tryLock(); try to aquire the resource immediately if it is free 
-lock.tryLock(Threa.currentThread, TimeUnit.MILISECOND) // try to aquire the lock after given time frame. if avl return true ese false 
-lock.unlock() //always do it in finally block 
-lock.lock();// same as synchronized wait until resource got lock - true
-lock.lockInterruptibly()// to interrupt lock 
-Thread.currrentThread.Inturrept();;  tell which thread got interrupt helps in logging use in catch block.
+```java
+thread.setPriority(8);
+```
 
+### Change name
 
-ReadWriteLock:
-Synchronized can not distinguish between read and write lock bcz of this there is unnecessary locking happen 
-so we have to use ReadWriteLock it allows access to resources if no write operation is performed 
-it has methods like readlock.lock() and writeLock.lock() if writelock is locked so no other methods can use resources.
+```java
+thread.setName("Worker-1");
+```
 
+### `join()`
 
-Java Deadlock:
-deadlock is a situation in where threads got stuck waiting for each other 
-Conditions for deadlock:
-1)Mutual Exclusion: only one thread can access the thread at a time 
-2)Hold and wait
-3)No preemption
-4)circular wait: a set of thread is waiting for each other in circular chain 
+```java
+t1.join();
+```
 
-ex: let say there are 2 threads both wants to write one holding (locking) pen and waiting for paper while other holding(locking) paper waiting for pen.
+The current thread waits until `t1` completes.
 
+Example:
 
-Thread Communication:
-thread will end up in inefficient busy waiting state, leading to wastage of resources and potential deadlock 
-it is achieved through following methods 
-wait() -> tells thread to release the lock and wait until other thread will not call notify or notifyAll method 
-notify()->  wake up single thread that is waiting 
-notifyAll()-> wakes up all the threads that are waiting 	 
+```text
+Main Thread
+    ↓
+t1.join()
+    ↓
+Wait for t1
+    ↓
+t1 finishes
+    ↓
+Main continues
+```
 
-Thread Safety:
-Anything is thread safe when it does not give wrong results when multiple threads try to or access them 
+### `sleep()`
 
-Thread Pool:
-location where we thread those are ready to perform action on the go 
-uses :
-resource management 	
-response time
-control over thread count 
+Pauses the **current thread** for a specified time.
 
+Important:
 
+> `sleep()` does **not release a lock** held by the thread.
 
-Fail Fast and Fail Safe:
-Fail Fast:
-Iterates over the original collection.
-If the collection is modified during iteration (except using Iterator.remove()), it throws ConcurrentModificationException.
-Faster because it doesn't create a copy.
-Examples: ArrayList, HashMap, HashSet.
+---
 
-Fail Safe:
-Iterates over a copy (snapshot) of the collection.
-Modifying the original collection during iteration does not throw an exception.
-Slightly slower and uses more memory because it creates a copy.
-Examples: CopyOnWriteArrayList, CopyOnWriteArraySet, ConcurrentHashMap (weakly consistent iterator).
+# 9. `yield()`
+
+```java
+Thread.yield();
+```
+
+`yield()` gives the scheduler a hint that the current thread is willing to give other runnable threads a chance to execute.
+
+Important:
+
+> `yield()` is only a scheduling hint. There is no guarantee that another thread will execute immediately.
+
+---
+
+# 10. Thread Priority
+
+Java thread priorities are:
+
+```text
+MIN_PRIORITY    = 1
+NORM_PRIORITY   = 5
+MAX_PRIORITY    = 10
+```
+
+Example:
+
+```java
+thread.setPriority(8);
+```
+
+Priority is a **scheduling hint**, not a guarantee.
+
+A higher-priority thread is not guaranteed to execute before a lower-priority thread.
+
+---
+
+# 11. Naming a Thread
+
+We can give a thread a name.
+
+```java
+Thread t = new Thread(task, "Worker-1");
+```
+
+Or:
+
+```java
+t.setName("Worker-1");
+```
+
+If extending `Thread`, we can also pass the name through the constructor:
+
+```java
+class MyThread extends Thread {
+
+    MyThread(String name) {
+        super(name);
+    }
+
+    @Override
+    public void run() {
+        System.out.println(getName());
+    }
+}
+```
+
+---
+
+# 12. User Thread vs Daemon Thread
+
+Threads created normally are **user threads** by default.
+
+Another type is a **daemon thread**.
+
+### Daemon Thread
+
+A daemon thread runs in the background to support user threads.
+
+```java
+thread.setDaemon(true);
+```
+
+This must be called **before `start()`**.
+
+```java
+Thread t = new Thread(task);
+
+t.setDaemon(true);
+
+t.start();
+```
+
+### Important
+
+The JVM does **not wait for daemon threads** to finish.
+
+When all user threads have finished, the JVM can terminate even if daemon threads are still running.
+
+Example:
+
+```text
+User Threads
+ ├── Main
+ └── Worker
+
+Daemon Thread
+ └── Background monitoring
+```
+
+If a user thread contains an infinite loop:
+
+```java
+while (true) {
+}
+```
+
+the JVM will continue running because the user thread is still alive.
+
+If the same work is performed by a daemon thread, the JVM can terminate once no user threads remain.
+
+---
+
+# 13. Thread Life Cycle / States
+
+Java officially provides these six `Thread.State` values:
+
+```text
+NEW
+RUNNABLE
+BLOCKED
+WAITING
+TIMED_WAITING
+TERMINATED
+```
+
+## 1. NEW
+
+Thread is created but `start()` has not been called.
+
+```java
+Thread t = new Thread(task);
+```
+
+---
+
+## 2. RUNNABLE
+
+After `start()` is called, the thread enters the `RUNNABLE` state.
+
+It can mean:
+
+* Ready to run
+* Currently running
+
+Java does **not** have a separate `RUNNING` state.
+
+---
+
+## 3. BLOCKED
+
+The thread is waiting to acquire an **intrinsic monitor lock**, usually because another thread currently owns that lock.
+
+Example:
+
+```java
+synchronized void method() {
+}
+```
+
+---
+
+## 4. WAITING
+
+The thread waits indefinitely for another thread/action.
+
+Examples:
+
+```java
+wait();
+join();
+```
+
+---
+
+## 5. TIMED_WAITING
+
+The thread waits for a specified amount of time.
+
+Examples:
+
+```java
+Thread.sleep(1000);
+wait(1000);
+join(1000);
+```
+
+---
+
+## 6. TERMINATED
+
+The thread has finished its execution.
+
+```text
+run() completed
+      ↓
+TERMINATED
+```
+
+---
+
+# 14. Synchronization
+
+When multiple threads access the **same shared mutable resource**, race conditions can occur.
+
+Example:
+
+```text
+counter = 0
+
+Thread 1 → counter++
+Thread 2 → counter++
+```
+
+Both threads may access/update the counter at nearly the same time, producing an unexpected result.
+
+To prevent this, we can use synchronization.
+
+### Critical Section
+
+The part of the program where a shared resource is accessed or modified is called the:
+
+> **Critical Section**
+
+Example:
+
+```java
+public synchronized void increment() {
+    counter++;
+}
+```
+
+The `synchronized` keyword provides **mutual exclusion**.
+
+It ensures that only one thread at a time can execute the synchronized critical section for the same lock.
+
+---
+
+# 15. Race Condition
+
+A **race condition** occurs when multiple threads access shared mutable data concurrently and the final result depends on their timing/order of execution.
+
+Example:
+
+```text
+counter = 0
+
+Thread 1 → reads 0
+Thread 2 → reads 0
+
+Thread 1 → writes 1
+Thread 2 → writes 1
+
+Expected → 2
+Actual   → 1
+```
+
+We can prevent such problems using synchronization, locks, atomic classes, or other concurrency mechanisms.
+
+---
+
+# 16. Locks in Java
+
+When we use `synchronized`, Java uses an object's **intrinsic monitor lock**.
+
+There are two common categories:
+
+### 1. Intrinsic Lock
+
+Automatically associated with every Java object.
+
+Used through:
+
+```java
+synchronized
+```
+
+Example:
+
+```java
+synchronized void update() {
+    // critical section
+}
+```
+
+### 2. Explicit Lock
+
+Manually controlled locks provided by:
+
+```text
+java.util.concurrent.locks
+```
+
+Example:
+
+```java
+private final Lock lock = new ReentrantLock();
+```
+
+We manually acquire and release the lock:
+
+```java
+lock.lock();
+
+try {
+    // critical section
+} finally {
+    lock.unlock();
+}
+```
+
+---
+
+# 17. ReentrantLock
+
+`ReentrantLock` is an implementation of the `Lock` interface.
+
+```java
+private final Lock lock = new ReentrantLock();
+```
+
+It is called **reentrant** because the same thread can acquire the same lock multiple times.
+
+It maintains a **hold count**.
+
+Example:
+
+```text
+Thread acquires lock
+        ↓
+hold count = 1
+        ↓
+same thread acquires again
+        ↓
+hold count = 2
+        ↓
+unlock()
+        ↓
+hold count = 1
+        ↓
+unlock()
+        ↓
+hold count = 0
+        ↓
+lock completely released
+```
+
+This is useful when a method holding a lock calls another method that tries to acquire the same lock.
+
+---
+
+# 18. `ReentrantLock` Methods
+
+### `lock()`
+
+Waits until the lock is acquired.
+
+```java
+lock.lock();
+```
+
+Similar to waiting for a synchronized lock to become available.
+
+### `tryLock()`
+
+Attempts to acquire the lock immediately.
+
+```java
+if (lock.tryLock()) {
+    try {
+        // critical section
+    } finally {
+        lock.unlock();
+    }
+}
+```
+
+Returns:
+
+```text
+true  → lock acquired
+false → lock not acquired
+```
+
+### `tryLock(time, unit)`
+
+Waits up to the specified amount of time to acquire the lock.
+
+Example:
+
+```java
+lock.tryLock(2, TimeUnit.SECONDS);
+```
+
+### `lockInterruptibly()`
+
+Allows a thread waiting for the lock to respond to interruption.
+
+### `unlock()`
+
+Releases the lock.
+
+Always place it in `finally`:
+
+```java
+lock.lock();
+
+try {
+    // critical section
+} finally {
+    lock.unlock();
+}
+```
+
+---
+
+# 19. `synchronized` vs `ReentrantLock`
+
+| `synchronized`                    | `ReentrantLock`                          |
+| --------------------------------- | ---------------------------------------- |
+| Simple                            | More control                             |
+| Lock/unlock handled automatically | Lock/unlock handled manually             |
+| No `tryLock()`                    | Supports `tryLock()`                     |
+| Less flexible                     | More flexible                            |
+| Good for simple synchronization   | Useful for advanced locking requirements |
+
+Use `synchronized` when simple mutual exclusion is enough.
+
+Use `ReentrantLock` when advanced locking control is required.
+
+---
+
+# 20. `sleep()` and Lock
+
+Consider:
+
+```java
+synchronized void method() {
+    Thread.sleep(5000);
+}
+```
+
+The thread sleeps for 5 seconds **while still holding the intrinsic lock**.
+
+Therefore, another thread trying to enter the same synchronized section has to wait for the lock.
+
+Remember:
+
+> `sleep()` pauses the thread but **does not release the lock**.
+
+---
+
+# 21. ReadWriteLock
+
+With a normal exclusive lock, both **read and write operations** may block each other.
+
+But suppose:
+
+```text
+100 threads → read data
+1 thread    → update data
+```
+
+There is no need to prevent multiple readers from reading simultaneously.
+
+`ReadWriteLock` provides two locks:
+
+```text
+Read Lock
+Write Lock
+```
+
+### Read Lock
+
+Multiple threads can generally hold the read lock simultaneously.
+
+### Write Lock
+
+Only one writer can hold the write lock, and other readers/writers must wait.
+
+Example:
+
+```java
+ReadWriteLock lock = new ReentrantReadWriteLock();
+
+lock.readLock().lock();
+
+try {
+    // read data
+} finally {
+    lock.readLock().unlock();
+}
+```
+
+For writing:
+
+```java
+lock.writeLock().lock();
+
+try {
+    // modify data
+} finally {
+    lock.writeLock().unlock();
+}
+```
+
+Enterprise example:
+
+> Configuration or cache data that is read frequently but updated rarely.
+
+---
+
+# 22. Deadlock
+
+A **deadlock** occurs when threads become permanently stuck waiting for resources/locks held by each other.
+
+Example:
+
+```text
+Thread 1:
+holds Pen
+   ↓
+waits for Paper
+
+Thread 2:
+holds Paper
+   ↓
+waits for Pen
+```
+
+Neither thread can continue.
+
+### Four Necessary Conditions for Deadlock
+
+#### 1. Mutual Exclusion
+
+Only one thread can use a particular resource at a time.
+
+#### 2. Hold and Wait
+
+A thread holds one resource while waiting for another.
+
+#### 3. No Preemption
+
+A resource cannot be forcibly taken away from the thread holding it.
+
+#### 4. Circular Wait
+
+A group of threads waits for each other in a circular chain.
+
+```text
+Thread 1 → Thread 2
+   ↑          ↓
+Thread 4 ← Thread 3
+```
+
+---
+
+# 23. Thread Communication
+
+Suppose a thread continuously checks whether some data is available:
+
+```java
+while (!dataAvailable) {
+    // keep checking
+}
+```
+
+This is called **busy waiting** and can waste CPU resources.
+
+Java provides `wait()`, `notify()`, and `notifyAll()` for thread communication.
+
+### `wait()`
+
+The current thread:
+
+* Releases the object's monitor lock
+* Enters the waiting state
+* Waits until another thread calls `notify()` or `notifyAll()`
+
+### `notify()`
+
+Wakes one thread waiting on the same object's monitor.
+
+### `notifyAll()`
+
+Wakes all threads waiting on the same object's monitor.
+
+These methods must be used with the object's monitor, typically inside synchronized code.
+
+Modern applications often use higher-level concurrency utilities such as:
+
+```text
+BlockingQueue
+CountDownLatch
+Semaphore
+ExecutorService
+CompletableFuture
+```
+
+---
+
+# 24. Thread Safety
+
+Something is **thread-safe** when multiple threads can access/use it concurrently without producing incorrect results or corrupting shared state.
+
+Example:
+
+```text
+Thread 1 ─┐
+Thread 2 ─┼──> Thread-safe component
+Thread 3 ─┘
+```
+
+Common ways to achieve thread safety:
+
+```text
+Immutability
+Synchronization
+Locks
+Atomic Classes
+Concurrent Collections
+Proper Transaction Handling
+```
+
+### Spring Boot Example
+
+Spring singleton beans are normally shared across multiple request threads.
+
+Therefore, avoid storing request-specific mutable data in instance variables.
+
+Bad:
+
+```java
+@Service
+class OrderService {
+
+    private int currentUserId;
+}
+```
+
+Better:
+
+```java
+public void processOrder(int userId) {
+
+    // local variable
+}
+```
+
+Local variables belong to the executing method/thread and are not shared like instance fields.
+
+---
+
+# 25. Thread Pool
+
+Creating a new thread for every task can be expensive.
+
+A **thread pool** maintains a collection of reusable worker threads.
+
+```text
+Tasks
+  ↓
+Thread Pool
+  ├── Worker 1
+  ├── Worker 2
+  ├── Worker 3
+  └── Worker 4
+```
+
+Example:
+
+```java
+ExecutorService executor =
+        Executors.newFixedThreadPool(5);
+
+executor.submit(() -> processOrder());
+```
+
+### Benefits
+
+* Thread reuse
+* Resource management
+* Control over thread count
+* Avoids creating excessive threads
+* Can improve response time for suitable workloads
+
+Example:
+
+```text
+1000 Tasks
+    ↓
+Thread Pool
+    ↓
+10 Worker Threads
+    ↓
+Tasks processed through the workers
+```
+
+Tasks that cannot immediately execute can wait in the executor's queue.
+
+---
+
+# 26. Thread Pool in Enterprise Applications
+
+Common use cases:
+
+```text
+Sending emails
+Background processing
+File processing
+Async jobs
+External API calls
+Scheduled/background tasks
+```
+
+In Spring Boot, it is generally better to use **managed executors/thread pools** rather than creating raw threads throughout the application.
+
+---
+
+# 27. Fail-Fast Iterator
+
+A fail-fast iterator generally works on the **original collection**.
+
+If the collection is structurally modified during iteration, it may throw:
+
+```text
+ConcurrentModificationException
+```
+
+Example:
+
+```java
+List<Integer> list = new ArrayList<>();
+
+for (Integer i : list) {
+    list.add(10);
+}
+```
+
+Common examples:
+
+```text
+ArrayList
+HashMap
+HashSet
+```
+
+Important:
+
+> Fail-fast behavior is **best-effort** and is not a thread-safety mechanism.
+
+---
+
+# 28. Fail-Safe / Concurrent Iteration
+
+**"Fail-safe" is a commonly used interview term, but it is not an official Java API category.**
+
+Different concurrent collections use different mechanisms.
+
+### CopyOnWriteArrayList
+
+Its iterator works on a **snapshot** of the collection.
+
+```text
+Original Collection
+       ↓
+    Snapshot
+       ↓
+    Iterator
+```
+
+Changes to the original collection do not affect the iterator's existing snapshot.
+
+Good when:
+
+> Reads are frequent and writes are rare.
+
+### CopyOnWriteArraySet
+
+Also uses copy-on-write behavior and provides snapshot-style iteration.
+
+### ConcurrentHashMap
+
+`ConcurrentHashMap` does **not** use a snapshot iterator.
+
+Its iterator is **weakly consistent**.
+
+It:
+
+* Does not throw `ConcurrentModificationException` because of concurrent updates
+* Can reflect some changes made during iteration
+* Does not necessarily represent one fixed snapshot of the map
+
+Remember:
+
+```text
+ArrayList / HashMap / HashSet
+        ↓
+Fail-fast behavior
+
+CopyOnWriteArrayList
+        ↓
+Snapshot iterator
+
+CopyOnWriteArraySet
+        ↓
+Snapshot-style iteration
+
+ConcurrentHashMap
+        ↓
+Weakly consistent iterator
+```
+
+---
+
+# 29. Enterprise Application Connection
+
+In a Java/Spring Boot application:
+
+```text
+Multiple HTTP Requests
+        ↓
+Servlet Container / Tomcat
+        ↓
+Worker Threads
+        ↓
+Spring Controller
+        ↓
+Service
+        ↓
+Repository
+        ↓
+Database
+```
+
+Multiple HTTP requests can be processed concurrently by different worker threads.
+
+Therefore:
+
+### Shared State
+
+Avoid unnecessary mutable instance variables in singleton Spring beans.
+
+### Database Operations
+
+Transactions and database locks should be designed carefully to avoid race conditions and deadlocks.
+
+### Thread Pools
+
+Use controlled executors for background processing instead of creating unlimited threads.
+
+### Concurrent Collections
+
+Use them when multiple threads genuinely need to access shared collections.
+
+Examples:
+
+```text
+ConcurrentHashMap
+CopyOnWriteArrayList
+BlockingQueue
+```
+
+### Synchronization
+
+Use it when multiple threads modify shared mutable state.
+
+### Async Processing
+
+Independent long-running tasks can be moved to background execution using managed thread pools.
+
+---
+
+# 30. Important Interview Questions
+
+### Q1. What is the difference between a process and a thread?
+
+**Process:** Running instance of a program with its own resources.
+
+**Thread:** Smallest unit of execution inside a process that shares the process's resources.
+
+---
+
+### Q2. What is the difference between `start()` and `run()`?
+
+`start()` starts a new thread of execution.
+
+Calling `run()` directly is just a normal method call and does not create a new thread.
+
+---
+
+### Q3. Why use `Runnable` instead of extending `Thread`?
+
+Because Java supports single class inheritance. A class implementing `Runnable` can still extend another class.
+
+---
+
+### Q4. What is a race condition?
+
+When multiple threads access shared mutable data concurrently and the result depends on their execution timing.
+
+---
+
+### Q5. What is a critical section?
+
+The part of code that accesses or modifies a shared resource.
+
+---
+
+### Q6. How does `synchronized` prevent race conditions?
+
+It provides **mutual exclusion**, allowing only one thread at a time to execute the synchronized critical section for the same lock.
+
+---
+
+### Q7. Does `sleep()` release a lock?
+
+**No.**
+
+---
+
+### Q8. Does `wait()` release a lock?
+
+**Yes.**
+
+`wait()` releases the object's monitor lock while the thread is waiting.
+
+---
+
+### Q9. What is the difference between `synchronized` and `ReentrantLock`?
+
+`ReentrantLock` provides more advanced control, such as:
+
+```text
+tryLock()
+tryLock(time, unit)
+lockInterruptibly()
+```
+
+---
+
+### Q10. What is deadlock?
+
+A situation where threads wait indefinitely for resources/locks held by each other.
+
+---
+
+### Q11. Why use a thread pool?
+
+To reuse threads, control concurrency, manage resources, and avoid creating excessive numbers of threads.
+
+---
+
+### Q12. Is `ArrayList` thread-safe?
+
+**No.**
+
+---
+
+### Q13. Is `ConcurrentHashMap` thread-safe?
+
+**Yes.** It is designed for concurrent access.
+
+---
+
+### Q14. Is `volatile` enough for `counter++`?
+
+**No.**
+
+`counter++` is a compound:
+
+```text
+Read
+ ↓
+Modify
+ ↓
+Write
+```
+
+operation.
+
+`volatile` provides visibility guarantees but does not make this compound operation atomic.
+
+For atomic increments:
+
+```java
+AtomicInteger counter = new AtomicInteger();
+
+counter.incrementAndGet();
+```
+
+---
+
+# 31. Most Important Mental Model
+
+Remember:
+
+```text
+CPU
+ ↓
+Core
+ ↓
+Process
+ ↓
+Thread
+ ↓
+Task / Code Execution
+```
+
+Concurrency:
+
+```text
+Multiple Processes
+        ↓
+   Multitasking
+
+Multiple Threads
+        ↓
+  Multithreading
+
+Shared Mutable Data
+        ↓
+  Race Condition
+        ↓
+Synchronization / Locks / Atomic Classes
+
+Many Tasks
+        ↓
+   Thread Pool
+```
+
+### Highest-Priority Interview Topics
+
+For a 1–2 year Java interview, focus strongly on:
+
+```text
+Process vs Thread
+        ↓
+start() vs run()
+        ↓
+Runnable
+        ↓
+Thread Lifecycle
+        ↓
+Synchronization
+        ↓
+Race Condition
+        ↓
+Critical Section
+        ↓
+Intrinsic vs Explicit Locks
+        ↓
+ReentrantLock
+        ↓
+ReadWriteLock
+        ↓
+Deadlock
+        ↓
+wait() / notify() / notifyAll()
+        ↓
+Thread Safety
+        ↓
+Thread Pool / ExecutorService
+        ↓
+Concurrent Collections
+        ↓
+volatile vs AtomicInteger
+```
