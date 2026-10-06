@@ -134,3 +134,116 @@
 
 &#x20;- Which tool do you use for task and issue tracking (e.g., Jira, Azure DevOps)?
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+
+The round started with:
+
+
+
+1\. Tell me about yourself.
+
+2\. Explain your current project and your contribution.
+
+3\. Explain project Architecture?
+
+4\. What is Exception Handling in Java?
+
+5\. How do you implement Global Exception Handling in Spring Boot?
+
+6\. What is the difference between @ControllerAdvice and @RestControllerAdvice?
+
+7\. What is the difference between throw and throws?
+
+8\. What are the different Access Modifiers in Java?
+
+9\. Explain Microservices Architecture used in your project.
+
+10\. What is Eureka and why do we use it?
+
+11\. What is an API Gateway and why do we need it?
+
+12\. What is Circuit Breaker?
+
+13\. What happens when one of your microservices goes down?
+
+14\. What are the different states of a Circuit Breaker?
+
+15\. What is Bean Scope in Spring?
+
+16\. What are the different Bean Scopes?
+
+17\. What are the important features introduced in Java 8?
+
+18\. What is a memory leak in Java? How can it happen?
+
+19\. What is the difference between String, StringBuilder and String Buffer?
+
+20\. Where is a String stored when we create it normally and when we use new String()?
+
+21\. What is the difference between @Primary and @Qualifier?                                            💻 Coding Questions                                                                                                              22. Write a program to check whether a given String is a palindrome.
+
+23\. Write a program to find the frequency of each character in a String.
+
+
+
+
+
+The second round was conducted in person.
+
+1\. Tell me about yourself.
+
+2\. Explain your project. What exactly was your contribution? The interviewer focused heavily on my actual project implementation, contribution, and the reasons behind the technical decisions I made.
+
+3\. Explain the OOPS concepts in Java with real-time examples.
+
+4\. What is a Lambda Expression? Why was it introduced in Java 8?
+
+5\. What is a Functional Interface? Can you give an example?
+
+6\. What is the difference between Microservices and Monolithic Architecture?
+
+7\. Explain the SDLC life cycle.
+
+8\. What is an API Gateway? Which design pattern is commonly associated with it?
+
+9\. What is the difference between JDK, JRE and JVM?
+
+10\. What are the important features introduced in Java 8?
+
+11\. What are SOLID principles? Explain them with examples.
+
+
+
+🗄️ SQL Questions
+
+12\. What are SQL Joins? Explain the different types of Joins.
+
+13\. What is an Index in SQL? Why do we use it?
+
+14\. What is the difference between a Primary Key and a Unique Key?
+
